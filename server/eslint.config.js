@@ -24,16 +24,17 @@ export default [
           semi: false,
           singleQuote: true,
           tabWidth: 2,
-          trailingComma: 'es5',
-        },
+          trailingComma: 'none'
+        }
       ],
       'no-console': 'warn',
       semi: 'off',
       quotes: ['error', 'single'],
       '@typescript-eslint/no-unused-vars': [
         'error',
-        { argsIgnorePattern: '^_' },
+        { argsIgnorePattern: '^_' }
       ],
-    },
-  },
+      "comma-dangle": ["error", "never"]
+    }
+  }
 ]

@@ -8,19 +8,19 @@ interface CreateGoalRequest {
 
 export async function createGoal({
   desiredWeeklyFrequency,
-  title,
+  title
 }: CreateGoalRequest) {
   const result = await db
     .insert(goals)
     .values({
       title,
-      desiredWeeklyFrequency,
+      desiredWeeklyFrequency
     })
     .returning()
 
   const goal = result[0]
 
   return {
-    goal,
+    goal
   }
 }

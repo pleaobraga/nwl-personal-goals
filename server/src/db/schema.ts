@@ -9,7 +9,7 @@ export const goals = pgTable('goals', {
   desiredWeeklyFrequency: integer('desired_weekly_frequency').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
-    .defaultNow(),
+    .defaultNow()
 })
 
 export const goalsCompletions = pgTable('goals_completions', {
@@ -21,5 +21,5 @@ export const goalsCompletions = pgTable('goals_completions', {
     .notNull(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
-    .defaultNow(),
+    .defaultNow()
 })

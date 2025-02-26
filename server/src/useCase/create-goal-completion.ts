@@ -8,7 +8,7 @@ interface CreateGoalCompletionRequest {
 }
 
 export async function createGoalCompletion({
-  goalId,
+  goalId
 }: CreateGoalCompletionRequest) {
   const firstDayOfWeek = dayjs().startOf('week').toDate()
   const lastDayOfWeek = dayjs().endOf('week').toDate()
@@ -17,7 +17,7 @@ export async function createGoalCompletion({
     db
       .select({
         goalId: goalsCompletions.goalId,
-        completionCount: count(goalsCompletions.id).as('completionCount'),
+        completionCount: count(goalsCompletions.id).as('completionCount')
       })
       .from(goalsCompletions)
       .where(
@@ -37,7 +37,7 @@ export async function createGoalCompletion({
       completionCount:
         sql/*sql*/ `COALESCE(${goalCompletionCounts.completionCount}, 0)`.mapWith(
           Number
-        ),
+        )
     })
     .from(goals)
     .leftJoin(goalCompletionCounts, eq(goalCompletionCounts.goalId, goals.id))
@@ -58,6 +58,6 @@ export async function createGoalCompletion({
   const goalCompletion = insertResult[0]
 
   return {
-    goalCompletion,
+    goalCompletion
   }
 }
