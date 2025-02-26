@@ -1,16 +1,25 @@
 import { db, client } from '.'
-import { goalsCompletions, goals } from './schema'
+import { goalsCompletions, goals, users } from './schema'
 
 async function seed() {
   await db.delete(goalsCompletions)
   await db.delete(goals)
 
+  const [user] = await db
+    .insert(users)
+    .values({
+      name: 'John Doe',
+      externalAccountId: 1212312,
+      avatarUrl: 'https://github.com/pleaobraga.png'
+    })
+    .returning()
+
   const goalsData = await db
     .insert(goals)
     .values([
-      { title: 'Acordar cedo', desiredWeeklyFrequency: 5 },
-      { title: 'Malhar', desiredWeeklyFrequency: 6 },
-      { title: 'Ler Livro', desiredWeeklyFrequency: 7 }
+      { userId: user.id, title: 'Acordar cedo', desiredWeeklyFrequency: 5 },
+      { userId: user.id, title: 'Malhar', desiredWeeklyFrequency: 6 },
+      { userId: user.id, title: 'Ler Livro', desiredWeeklyFrequency: 7 }
     ])
     .returning()
 
