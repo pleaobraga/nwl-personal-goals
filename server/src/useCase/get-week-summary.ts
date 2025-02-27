@@ -6,7 +6,11 @@ import { db } from '../db'
 
 dayjs.extend(weekOfYear)
 
-export async function getWeekSummary() {
+interface Request {
+  userId: string
+}
+
+export async function getWeekSummary({ userId }: Request) {
   const currentYear = dayjs().year()
   const currentWeek = dayjs().week()
 
@@ -22,7 +26,8 @@ export async function getWeekSummary() {
       .where(
         and(
           sql`EXTRACT(YEAR FROM ${goals.createdAt}) <= ${currentYear}`,
-          sql`EXTRACT(WEEK FROM ${goals.createdAt}) <= ${currentWeek}`
+          sql`EXTRACT(WEEK FROM ${goals.createdAt}) <= ${currentWeek}`,
+          eq(goals.userId, userId)
         )
       )
   )
@@ -43,7 +48,8 @@ export async function getWeekSummary() {
       .where(
         and(
           sql`EXTRACT(YEAR FROM ${goals.createdAt}) = ${currentYear}`,
-          sql`EXTRACT(WEEK FROM ${goals.createdAt}) = ${currentWeek}`
+          sql`EXTRACT(WEEK FROM ${goals.createdAt}) = ${currentWeek}`,
+          eq(goals.userId, userId)
         )
       )
   )
