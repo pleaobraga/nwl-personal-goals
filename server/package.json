@@ -6,7 +6,12 @@
   "scripts": {
     "dev": "tsx watch --env-file .env src/http/server.ts",
     "seed": "tsx --env-file .env src/db/seed.ts",
-    "lint": "eslint src --ext .ts --fix"
+    "lint": "eslint src --ext .ts --fix",
+    "pretest": "npm run db:migrate:test",
+    "pretest:watch": "npm run db:migrate:test",
+    "db:migrate:test": "dotenv -e .env.test -- drizzle-kit migrate",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +23,7 @@
     "@types/pg": "^8.11.11",
     "@typescript-eslint/eslint-plugin": "^8.24.1",
     "@typescript-eslint/parser": "^8.24.1",
+    "dotenv-cli": "^8.0.0",
     "drizzle-kit": "^0.30.4",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.1",
