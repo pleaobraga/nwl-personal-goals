@@ -10,8 +10,9 @@
     "pretest": "npm run db:migrate:test",
     "pretest:watch": "npm run db:migrate:test",
     "db:migrate:test": "dotenv -e .env.test -- drizzle-kit migrate",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "db:migrate": "drizzle-kit migrate",
+    "test": "dotenv -e .env.test -- vitest run",
+    "test:watch": "dotenv -e .env.test -- vitest"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
   "description": "",
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@faker-js/faker": "^9.5.0",
     "@types/node": "^22.13.5",
     "@types/pg": "^8.11.11",
     "@typescript-eslint/eslint-plugin": "^8.24.1",
@@ -32,7 +34,8 @@
     "prettier": "^3.5.2",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.1"
+    "typescript-eslint": "^8.24.1",
+    "vitest": "^3.0.7"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.2",

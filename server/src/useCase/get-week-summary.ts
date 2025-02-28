@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
-import { and, desc, eq, sql } from 'drizzle-orm'
+import { and, eq, gte, lte, sql, desc } from 'drizzle-orm'
 import { goals, goalsCompletions } from '../db/schema'
 import { db } from '../db'
 
@@ -8,11 +8,12 @@ dayjs.extend(weekOfYear)
 
 interface Request {
   userId: string
+  weekStartsAt: Date
 }
 
-export async function getWeekSummary({ userId }: Request) {
-  const currentYear = dayjs().year()
-  const currentWeek = dayjs().week()
+export async function getWeekSummary({ userId, weekStartsAt }: Request) {
+  const firstDayOfWeek = weekStartsAt
+  const lastDatOfWeek = dayjs(weekStartsAt).endOf('week').toDate()
 
   const goalsCreatedUpToWeek = db.$with('goals_created_up_to_week').as(
     db
@@ -23,13 +24,7 @@ export async function getWeekSummary({ userId }: Request) {
         createdAt: goals.createdAt
       })
       .from(goals)
-      .where(
-        and(
-          sql`EXTRACT(YEAR FROM ${goals.createdAt}) <= ${currentYear}`,
-          sql`EXTRACT(WEEK FROM ${goals.createdAt}) <= ${currentWeek}`,
-          eq(goals.userId, userId)
-        )
-      )
+      .where(and(lte(goals.createdAt, lastDatOfWeek), eq(goals.userId, userId)))
   )
 
   const goalsCompletedInWeek = db.$with('goals_completed_in_week').as(
@@ -43,12 +38,11 @@ export async function getWeekSummary({ userId }: Request) {
         )
       })
       .from(goalsCompletions)
-      .orderBy(desc(goalsCompletions.createdAt))
       .innerJoin(goals, eq(goals.id, goalsCompletions.goalId))
       .where(
         and(
-          sql`EXTRACT(YEAR FROM ${goals.createdAt}) = ${currentYear}`,
-          sql`EXTRACT(WEEK FROM ${goals.createdAt}) = ${currentWeek}`,
+          gte(goalsCompletions.createdAt, firstDayOfWeek),
+          lte(goalsCompletions.createdAt, lastDatOfWeek),
           eq(goals.userId, userId)
         )
       )
@@ -72,6 +66,7 @@ export async function getWeekSummary({ userId }: Request) {
       })
       .from(goalsCompletedInWeek)
       .groupBy(goalsCompletedInWeek.completionDate)
+      .orderBy(desc(goalsCompletedInWeek.completionDate))
   )
 
   type Summary = Record<
